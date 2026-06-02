@@ -12,7 +12,7 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login-success" element={<SuccessfulLogin />} />
-
+{/* Hai it's a test */}
         {/* Catch-all: redirect unknown paths to home */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
