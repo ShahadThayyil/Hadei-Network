@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthLayout from '../components/AuthLayout';
-import Input from '../components/Input';
-import Button from '../components/Button';
-import Alert from '../components/Alert';
+import AuthLayout from '../../components/auth/AuthLayout';
+import Input from '../../components/auth/Input';
+import Button from '../../components/common/Button';
+import Alert from '../../components/auth/Alert';
 
 export default function SignupPage() {
   const navigate = useNavigate();
