@@ -5,8 +5,10 @@ import LoginPage from './pages/auth/LoginPage'
 import SignupPage from './pages/auth/SignupPage'
 import SuccessfulLogin from './pages/auth/SuccessfulLogin'
 
-import ClientWelcome from './pages/client/ClientWelcomePage'
+// FIXED IMPORT: Directing the routing path to your newly rewritten ClientWelcomePage layout file
+import ClientWelcome from './pages/client/ClientWelcomePage' 
 import FreelancerWelcome from './pages/freelancer/FreelancerWelcomePage'
+import ClientOnboarding from './pages/client/ClientOnboarding' 
 
 export default function App() {
   return (
@@ -17,18 +19,22 @@ export default function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login-success" element={<SuccessfulLogin />} />
 
-        {/* Dummy Dashboard Routes */}
+        {/* Onboarding Pipeline */}
+        <Route path="/client/onboarding" element={<ClientOnboarding />} />
+
+        {/* Client Dashboard Render Target */}
         <Route
           path="/dashboard/client"
           element={<ClientWelcome />}
         />
 
+        {/* Freelancer Dashboard Render Target */}
         <Route
           path="/dashboard/freelancer"
           element={<FreelancerWelcome />}
         />
 
-        {/* Catch-all: redirect unknown paths to home */}
+        {/* Catch-all fallback routing configuration */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

@@ -12,7 +12,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(null);
 
-  // Dummy Credentials
+  // Dummy Credentials for Testing
   const DUMMY_CLIENT = {
     email: 'client@demo.com',
     password: 'client123',
@@ -26,7 +26,6 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Mandatory field check
     if (!form.email || !form.password) {
       setAlert({ type: 'error', message: 'All fields are mandatory.' });
       return;
@@ -34,44 +33,39 @@ export default function LoginPage() {
 
     setAlert(null);
 
-    // ==========================
-    // Dummy Client Login
-    // ==========================
-    if (
-      form.email === DUMMY_CLIENT.email &&
-      form.password === DUMMY_CLIENT.password
-    ) {
-      navigate('/dashboard/client');
+    // Dummy Client Login (Testing loop: always routes to onboarding)
+    if (form.email === DUMMY_CLIENT.email && form.password === DUMMY_CLIENT.password) {
+      navigate('/client/onboarding');
       return;
     }
 
-    // ==========================
     // Dummy Freelancer Login
-    // ==========================
-    if (
-      form.email === DUMMY_FREELANCER.email &&
-      form.password === DUMMY_FREELANCER.password
-    ) {
+    if (form.email === DUMMY_FREELANCER.email && form.password === DUMMY_FREELANCER.password) {
       navigate('/dashboard/freelancer');
       return;
     }
 
-    // ==========================
-    // Existing Supabase Logic
-    // ==========================
+    // Production Supabase Auth Logic
     setLoading(true);
-
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: form.email,
       password: form.password,
     });
-
     setLoading(false);
 
     if (error) {
       setAlert({ type: 'error', message: error.message });
     } else {
-      navigate('/dashboard');
+      const userRole = data?.user?.user_metadata?.role;
+      const hasOnboarded = data?.user?.user_metadata?.has_onboarded;
+
+      if (userRole === 'client' && !hasOnboarded) {
+        navigate('/client/onboarding');
+      } else if (userRole === 'client') {
+        navigate('/dashboard/client');
+      } else {
+        navigate('/dashboard/freelancer');
+      }
     }
   };
 
@@ -89,9 +83,7 @@ export default function LoginPage() {
           label="Email address"
           type="email"
           value={form.email}
-          onChange={(e) =>
-            setForm({ ...form, email: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
           placeholder="you@hadei.network"
         />
 
@@ -99,17 +91,12 @@ export default function LoginPage() {
           label="Secure password"
           type="password"
           value={form.password}
-          onChange={(e) =>
-            setForm({ ...form, password: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
           placeholder="••••••••"
         />
 
         <div className="flex justify-end pr-1">
-          <button
-            type="button"
-            className="text-[10px] font-black uppercase text-black/30 hover:text-black tracking-widest"
-          >
+          <button type="button" className="text-[10px] font-black uppercase text-black/30 hover:text-black tracking-widest transition-colors">
             Forgot password?
           </button>
         </div>
@@ -120,17 +107,13 @@ export default function LoginPage() {
 
         <div className="flex items-center gap-4 py-4">
           <div className="flex-1 h-px bg-black/10" />
-          <span className="text-[10px] font-black text-black/20 uppercase tracking-widest text-center">
-            or continue with
-          </span>
+          <span className="text-[10px] font-black text-black/20 uppercase tracking-widest text-center">or continue with</span>
           <div className="flex-1 h-px bg-black/10" />
         </div>
 
         <button
           type="button"
-          onClick={() =>
-            supabase.auth.signInWithOAuth({ provider: 'google' })
-          }
+          onClick={() => supabase.auth.signInWithOAuth({ provider: 'google' })}
           className="w-full border-2 border-black py-3 rounded-xs font-bold text-xs uppercase hover:bg-gray-50 flex items-center justify-center gap-3 transition-colors"
         >
           <span className="font-black">Google Account</span>
