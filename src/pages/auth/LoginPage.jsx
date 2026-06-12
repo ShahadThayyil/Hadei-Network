@@ -52,7 +52,7 @@ export default function LoginPage() {
       form.email === DUMMY_FREELANCER.email &&
       form.password === DUMMY_FREELANCER.password
     ) {
-      navigate('/dashboard/freelancer');
+      navigate('/onboarding/freelancer');
       return;
     }
 
